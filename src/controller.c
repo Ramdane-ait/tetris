@@ -80,6 +80,7 @@ void run(controller *c) {
     if (tetris_game_over(c->game)) {
         c->view->render_game_over(c->view,c->game);
     }
+    c->view->stop(c->view);
 }
 
 void destroy_controller(controller *c) {

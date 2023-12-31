@@ -36,7 +36,7 @@ viewer *initSdlViewer(int width , int height);
  * 
  * @return un type enuméré Event
 */
-Event getEvent(struct viewer *v);
+Event getSdlEvent(struct viewer *v);
 
 /*
  * @brief affiche le jeu (plateau,informations) en mode SDL 
@@ -45,7 +45,7 @@ Event getEvent(struct viewer *v);
  * 
  * @param game structure represantant le jeu
 */
-void render_game(viewer *v,tetris_game *game);
+void render_game_sdl(viewer *v,tetris_game *game);
 /*
  * @brief affiche un message de fin du jeu
  *
@@ -53,7 +53,9 @@ void render_game(viewer *v,tetris_game *game);
  * 
  * @param game structure represantant le jeu
 */
-void draw_game_over_text(viewer *,tetris_game *);
+void draw_game_over_sdl(viewer *,tetris_game *);
+
+void stopSdlViewer(viewer *v);
 /**
  * @brief Detruit le viewer.
  *

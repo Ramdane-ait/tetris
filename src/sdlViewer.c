@@ -8,13 +8,13 @@ typedef enum {
 
 static const Color block_color[] = {
     { 0x11, 0x11, 0x11, 0x11 },
-    { 0x44, 0xE5, 0xE5, 0xFF },
-    { 0xE5, 0xE5, 0x44, 0xFF },
-    { 0xE5, 0x44, 0xE5, 0xFF },
-    { 0x44, 0xE5, 0x7A, 0xFF },
-    { 0xE5, 0x44, 0x44, 0xFF },
-    { 0x44, 0x95, 0xE5, 0xFF },
-    { 0xE5, 0x95, 0x44, 0xFF }
+    { 0x00, 0xFF, 0xFF, 0xFF },
+    { 0x00, 0x00, 0xFF, 0xFF },
+    { 0xFF, 0x7F, 0x00, 0xFF },
+    { 0xFF, 0xFF, 0x00, 0xFF },
+    { 0x00, 0xFF, 0x00, 0xFF },
+    { 0x80, 0x00, 0x80, 0xFF },
+    { 0xFF, 0x00, 0x00, 0xFF }
 };
 
 viewer *initSdlViewer(int width , int height) {
@@ -59,10 +59,10 @@ viewer *initSdlViewer(int width , int height) {
     }
 
     ret->data = data;
-    ret->getEvent = getEvent;
-    ret->render_game = render_game;
-    ret->render_game_over = draw_game_over_text;
-    /* ret->stop = stopSdlPlayer; */
+    ret->getEvent = getSdlEvent;
+    ret->render_game = render_game_sdl;
+    ret->render_game_over = draw_game_over_sdl;
+    ret->stop = stopSdlViewer;
     ret->destroy = destroySdlViewer;
 
     return ret;
@@ -130,7 +130,7 @@ static void display_grid(SDL_Renderer *renderer, tetris_game *game) {
     }
 }
 
-Event getEvent(viewer *v) {
+Event getSdlEvent(viewer *v) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -174,14 +174,14 @@ static void draw_nextPiece(SDL_Renderer *renderer, TTF_Font *font,int x , int y 
     }
 }
 
-void draw_game_over_text(viewer *v,tetris_game *game) {
+void draw_game_over_sdl(viewer *v,tetris_game *game) {
     dataSdlViewer *data = (dataSdlViewer *)v->data;
     draw_string(data->renderer,data->font,"GAME OVER",(game->width / 2 + 1) * BLOCK_SIZE,game->height / 2 * BLOCK_SIZE,TEXT_ALIGN_CENTER,(Color){0xff,0xff,0xff,0xff});
     SDL_RenderPresent(data->renderer);
     SDL_Delay(2000);
 }
 
-void render_game(viewer *v,tetris_game *game) {
+void render_game_sdl(viewer *v,tetris_game *game) {
     dataSdlViewer *data = (dataSdlViewer *)v->data;
     char buffer[50];
     display_grid(data->renderer,game);
@@ -197,6 +197,8 @@ void render_game(viewer *v,tetris_game *game) {
     SDL_Delay(16);
 }
 
+
+void stopSdlViewer(viewer *v) { } 
 
 void destroySdlViewer(viewer *v) {
     dataSdlViewer *data = (dataSdlViewer *)v->data;
