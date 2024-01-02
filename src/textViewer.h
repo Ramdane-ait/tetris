@@ -4,7 +4,7 @@
 #include "viewer.h"
 
 typedef struct {
-    WINDOW *grid,*score,*next;
+    WINDOW *grid,*score,*hold,*next; 
 } dataTextViewer;
 
 

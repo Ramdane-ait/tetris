@@ -13,12 +13,33 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     tetris_game *game = tetris_create(22 , 10);
+/*     tetris_put(game,game->currentPiece);
+    tetris_soft_drop(game);
+    tetris_soft_drop(game);
+    tetris_soft_drop(game);
+    for (int i = 0;i < 22;i++) {
+        for (int j = 0; j < 10;j++) {
+            printf("%d ",game->grid[i * 10 + j]);
+        }
+        printf("\n");
+    }
+    printf("\n\n");
+    printf("-1 mod 4 : %d\n\n",-1 % 4);
+    tetris_rotate(game,-1);
+    tetris_rotate(game,-1);
+
+    for (int i = 0;i < 22;i++) {
+        for (int j = 0; j < 10;j++) {
+            printf("%d ",game->grid[i * 10 + j]);
+        }
+        printf("\n");
+    } */
     viewer *v = makeViewer(argv[1],game);
     controller *control = make_controller(v,game);
     run(control);
 
     destroy_controller(control);
-    tetris_destroy(game);
     v->destroy(v);
+    tetris_destroy(game);
     return 0;
 }

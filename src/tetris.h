@@ -35,7 +35,7 @@ typedef struct {
     int autoMove;
     Tetromino currentPiece;
     Tetromino nextPiece;
-
+    Tetromino holdPiece;
 } tetris_game;
 
 
@@ -46,10 +46,13 @@ void tetris_destroy(tetris_game *);
 void tetris_auto_move(tetris_game *game);
 bool tetris_game_over(tetris_game *);
 
+void tetris_put(tetris_game *game, Tetromino tetromino);
+
 point tetromino_get(int nTet, int nOr, int nBl);
 void tetris_hard_drop(tetris_game *game);
 void tetris_soft_drop(tetris_game *game);
 void tetris_move(tetris_game *game, int direction);
 void tetris_rotate(tetris_game *game, int direction);
+void tetris_hold(tetris_game *game);
 int tetris_check_lines(tetris_game *game);
 void tetris_adjust_score(tetris_game *game, int lines_cleared);

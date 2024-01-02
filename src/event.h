@@ -17,6 +17,8 @@ typedef enum {
     E_RIGHT,
     E_SOFT_DROP,
     E_HARD_DROP,
-    E_ROTATE,
+    E_ROTATE_ClOCK,
+    E_ROTATE_COUNTER,
+    E_HOLD,
     E_OTHER
 } Event;

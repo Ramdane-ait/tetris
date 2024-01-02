@@ -146,20 +146,25 @@ Event getSdlEvent(viewer *v) {
                 return E_RIGHT;
             case SDLK_UP:
             case SDLK_z:
-                return E_ROTATE;
+                return E_ROTATE_ClOCK;
+            case SDLK_LCTRL:
+            case SDLK_RCTRL:
+                return E_ROTATE_COUNTER;
             case SDLK_DOWN:
             case SDLK_s:
                 return E_SOFT_DROP;
             case SDLK_SPACE:
                 return E_HARD_DROP;
+            case SDLK_c:
+                return E_HOLD;
             }
             return E_OTHER;
         } 
     }
 }
 
-static void draw_nextPiece(SDL_Renderer *renderer, TTF_Font *font,int x , int y ,tetris_game *game) {
-    draw_string(renderer,font,"NEXT",x * BLOCK_SIZE,y * BLOCK_SIZE,TEXT_ALIGN_CENTER,(Color){0xcc,0xcc,0xcc,0xcc});
+static void draw_piece(SDL_Renderer *renderer, TTF_Font *font,char * text,int x , int y ,Tetromino piece) {
+    draw_string(renderer,font,text,x * BLOCK_SIZE,y * BLOCK_SIZE,TEXT_ALIGN_CENTER,(Color){0xcc,0xcc,0xcc,0xcc});
     int new_y = y + 2,new_x = x - 2,i,j;
     for (i = 0;i < NUM_TET_BLOCK;i++) {
         for (j = 0;j < NUM_TET_BLOCK;j++){
@@ -167,8 +172,8 @@ static void draw_nextPiece(SDL_Renderer *renderer, TTF_Font *font,int x , int y 
         }
     }
     for (i = 0;i < NUM_TET_BLOCK;i++) {
-        point p = tetromino_get(game->nextPiece.type,game->nextPiece.orientation,i);
-        draw_block(renderer,new_x + p.col,new_y + p.row,block_color[game->nextPiece.type + 1]);
+        point p = tetromino_get(piece.type,piece.orientation,i);
+        draw_block(renderer,new_x + p.col,new_y + p.row,block_color[piece.type + 1]);
     }
 }
 
@@ -198,7 +203,8 @@ void render_game_sdl(viewer *v,tetris_game *game) {
     snprintf(buffer, sizeof(buffer), "%u", game->lines_remaining);
     draw_string(data->renderer, data->font, buffer, (game->width + 4) * BLOCK_SIZE, BLOCK_SIZE * 8 + 10, TEXT_ALIGN_CENTER, (Color){0xcc,0xcc,0xcc,0xcc});
 
-    draw_nextPiece(data->renderer,data->font,game->width + 4,10,game);
+    draw_piece(data->renderer,data->font,"NEXT",game->width + 4,10,game->nextPiece);
+    draw_piece(data->renderer,data->font,"HOLD",game->width + 4,17,game->holdPiece);
     SDL_RenderPresent(data->renderer);
     SDL_Delay(16);
 }

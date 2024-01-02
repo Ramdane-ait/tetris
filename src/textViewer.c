@@ -53,6 +53,7 @@ viewer *initTextViewer(int width, int height) {
 
     data->grid = newwin(height + 2, 2 * width + 2, 0, 0);
     data->next  = newwin(6, 10, 0, 2 * (width + 1) + 1);
+    data->hold  = newwin(6, 10, 7, 2 * (width + 1) + 1);
     data->score = newwin(6, 10, 14, 2 * (width + 1 ) + 1);
     ret->data = data;
     ret->getEvent = getTextEvent;
@@ -106,6 +107,7 @@ void render_game_text(viewer *v,tetris_game *game) {
     dataTextViewer *data = (dataTextViewer *)v->data;
     display_grid(data->grid,game);
     display_piece(data->next,&game->nextPiece);
+    display_piece(data->hold,&game->holdPiece);
     display_score(data->score,game);
     doupdate();
     sleep_milli(16);
@@ -126,24 +128,25 @@ void draw_game_over_text(viewer *v,tetris_game *game) {
 Event getTextEvent(viewer *v) {
     switch (getch()) {
     case KEY_LEFT:
-      return E_LEFT;
-      break;
-    case KEY_RIGHT:
-      return E_RIGHT;
-      break;
-    case KEY_UP:
-      return E_ROTATE;
-      break;
-    case KEY_DOWN:
-      return E_SOFT_DROP;
-      break;
     case 'q':
+      return E_LEFT; 
+    case KEY_RIGHT:
+    case 'd':
+      return E_RIGHT;  
+    case KEY_UP:
+    case 'z':
+      return E_ROTATE_ClOCK;  
+    case 'a':
+      return E_ROTATE_COUNTER;
+    case KEY_DOWN:
+    case 's':
+      return E_SOFT_DROP; 
     case 27:
       return E_QUIT;
-      break;
     case ' ':
       return E_HARD_DROP;
-      break;
+    case 'c':
+      return E_HOLD;
     default:
       return E_OTHER;
     }

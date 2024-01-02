@@ -153,13 +153,32 @@ void tetris_hard_drop(tetris_game *game) {
     tetris_put(game, game->currentPiece);
     tetris_new_piece(game);
 }
+
+void tetris_hold(tetris_game *game) {
+    tetris_remove(game, game->currentPiece);
+    if (game->holdPiece.type == -1) {
+        game->holdPiece = game->currentPiece;
+        tetris_new_piece(game);
+    } else {
+        int type = game->currentPiece.type, ori = game->currentPiece.orientation;
+        game->currentPiece.type = game->holdPiece.type;
+        game->currentPiece.orientation = game->holdPiece.orientation;
+        game->holdPiece.type = type;
+        game->holdPiece.orientation = ori;
+        while (!tetris_fits(game, game->currentPiece)) {
+            game->currentPiece.location.row--;
+        }
+    }
+    tetris_put(game, game->currentPiece);
+}
+
 /*
     @brief effectuer une rotation
 */
 void tetris_rotate(tetris_game *game, int direction) {
     tetris_remove(game, game->currentPiece);
     while (true) {
-        game->currentPiece.orientation = (game->currentPiece.orientation + direction) % NUM_ORIENTATION;
+        game->currentPiece.orientation = ((game->currentPiece.orientation + direction) % NUM_ORIENTATION + NUM_ORIENTATION) % NUM_ORIENTATION;
         if (tetris_fits(game, game->currentPiece)) break; // si la piece orienté peut etre placée 
         game->currentPiece.location.col--; // sinon on essaye de la bouger a gauche 
         if (tetris_fits(game, game->currentPiece)) break;
@@ -284,6 +303,9 @@ void tetris_init(tetris_game *game, unsigned height, unsigned width) {
     tetris_new_piece(game);
     tetris_new_piece(game);
     game->nextPiece.location.col = game->width/2 - 2;
+    game->holdPiece.type = -1;
+    game->holdPiece.orientation = 0;
+    game->holdPiece.location.row = 0;
 }
 
 tetris_game *tetris_create(unsigned height, unsigned width)
