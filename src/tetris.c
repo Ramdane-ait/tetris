@@ -6,7 +6,7 @@
 
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 
-point TETROMINOS[NUM_TETROMINOS][NUM_ORIENTATION][NUM_TET_BLOCK] = {
+static point TETROMINOS[NUM_TETROMINOS][NUM_ORIENTATION][NUM_TET_BLOCK] = {
   // I
   {{{1, 0}, {1, 1}, {1, 2}, {1, 3}},
    {{0, 2}, {1, 2}, {2, 2}, {3, 2}},
@@ -44,17 +44,20 @@ point TETROMINOS[NUM_TETROMINOS][NUM_ORIENTATION][NUM_TET_BLOCK] = {
    {{0, 1}, {1, 0}, {1, 1}, {2, 0}}},
 };
 
-int GRAVITY_LEVEL[MAX_LEVEL + 1] = {
+static int GRAVITY_LEVEL[MAX_LEVEL + 1] = {
   50, 48, 46, 44, 42, 39, 36, 33, 30, 27,
   22, 18, 14, 10, 7, 6, 5, 4,  3,  2
 };
 
 
+static int bag[NUM_TETROMINOS]; 
+static int num_bag = -1;
+
 point tetromino_get(int nTet, int nOr, int nBl) {
     return TETROMINOS[nTet][nOr][nBl];
 }
 
-int tetris_get(tetris_game *game, int row, int col) {
+static int tetris_get(tetris_game *game, int row, int col) {
     return game->grid[game->width * row + col];
 };
 
@@ -65,14 +68,14 @@ static void tetris_set(tetris_game *game, int row, int col, int value) {
     game->grid[game->width * row + col] = value;
 }
 
-bool tetris_check(tetris_game *game,int row, int col) {
+static bool tetris_check(tetris_game *game,int row, int col) {
     return row >= 0 && col >= 0 && row < game->height && col < game->width;
 }
 
 /*
     @brief place une piece dans la grille du jeu
 */
-void tetris_put(tetris_game *game, Tetromino tetromino) {
+static void tetris_put(tetris_game *game, Tetromino tetromino) {
     unsigned i;
     for (i = 0; i < NUM_TET_BLOCK; i++) {
         point cell = TETROMINOS[tetromino.type][tetromino.orientation][i];
@@ -107,9 +110,26 @@ static bool tetris_fits(tetris_game *game, Tetromino tetromino) {
     return true;
 }
 
+static void init_bag(int *bag) {
+    int i,j,x;
+    for (i = 0;i < NUM_TETROMINOS;i++) {
+        bag[i] = i;
+    }
+    for (x = 0;x < NUM_TETROMINOS;x++) {
+        i = rand() % NUM_TETROMINOS;
+        j = rand() % NUM_TETROMINOS;
+        int tmp = bag[i];
+        bag[i] = bag[j];
+        bag[j] = tmp;
+    }
+}
 
 static int random_tetromino() {
-    return rand() % NUM_TETROMINOS;
+    if (num_bag == -1) {
+        init_bag(bag);
+        num_bag = NUM_TETROMINOS;
+    }
+    return bag[num_bag--]; 
 }
 
 /*

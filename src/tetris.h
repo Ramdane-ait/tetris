@@ -46,8 +46,6 @@ void tetris_destroy(tetris_game *);
 void tetris_auto_move(tetris_game *game);
 bool tetris_game_over(tetris_game *);
 
-void tetris_put(tetris_game *game, Tetromino tetromino);
-
 point tetromino_get(int nTet, int nOr, int nBl);
 void tetris_hard_drop(tetris_game *game);
 void tetris_soft_drop(tetris_game *game);

@@ -8,6 +8,7 @@ typedef struct viewer {
   Event (*getEvent)(struct viewer *);
   void (*render_game)(struct viewer *,tetris_game *);
   void (*render_game_over)(struct viewer *,tetris_game *);
+  void (*playMusic)(struct viewer *);
   void (*stop)(struct viewer *);
   void (*destroy)(struct viewer *);
 } viewer;

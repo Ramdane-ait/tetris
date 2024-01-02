@@ -43,6 +43,7 @@ void render_game_text(viewer *v,tetris_game *game);
  * @param game structure represantant le jeu
 */
 void draw_game_over_text(viewer *,tetris_game *);
+void startTextMusic(viewer *);
 void stopTextViewer(viewer *v);
 /**
  * @brief Detruit le viewer.

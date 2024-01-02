@@ -25,7 +25,7 @@ viewer *initSdlViewer(int width , int height) {
     }
 
     /* Initialise SDL */
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         fprintf(stderr, "Could not initialise SDL: %s\n", SDL_GetError());
         free(ret);
         return NULL;
@@ -36,9 +36,18 @@ viewer *initSdlViewer(int width , int height) {
         free(ret);
         return NULL;
     }
+    bool music = true;
+    if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) {
+        fprintf(stderr, "unable to initialize SDL_mixer\n");
+        music = false;
+    }
+    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) != 0) {
+        fprintf(stderr, "unable to initialize audio\n");
+        music = false;
+    }
     dataSdlViewer *data = (dataSdlViewer *)malloc(sizeof(dataSdlViewer));
     if (!data) {
-        perror("Problem when allocation the data structure.");
+        perror("Problem when allocating the data structure.");
         free(ret);
         return NULL;
     }
@@ -57,11 +66,17 @@ viewer *initSdlViewer(int width , int height) {
         free(ret);
         return NULL;
     }
-
+    if (music) {
+        Mix_AllocateChannels(1);
+        data->sound = Mix_LoadMUS(MUSIC_PATH);
+        if (!data->sound) music = false;
+    }
+    data->music = music;
     ret->data = data;
     ret->getEvent = getSdlEvent;
     ret->render_game = render_game_sdl;
     ret->render_game_over = draw_game_over_sdl;
+    ret->playMusic = startSdlMusic;
     ret->stop = stopSdlViewer;
     ret->destroy = destroySdlViewer;
 
@@ -209,14 +224,21 @@ void render_game_sdl(viewer *v,tetris_game *game) {
     SDL_Delay(16);
 }
 
+void startSdlMusic(viewer *v) {
+    dataSdlViewer *data = (dataSdlViewer *)v->data;
+    if (data->music) Mix_PlayMusic(data->sound, -1);    
+}
 
-void stopSdlViewer(viewer *v) { } 
+void stopSdlViewer(viewer *v) {} 
 
 void destroySdlViewer(viewer *v) {
     dataSdlViewer *data = (dataSdlViewer *)v->data;
     SDL_DestroyRenderer(data->renderer);
     SDL_DestroyWindow(data->window);
     TTF_CloseFont(data->font);
+    Mix_FreeMusic(data->sound);
+    Mix_CloseAudio();
+    Mix_Quit();
     free(data);
     free(v);
     TTF_Quit();

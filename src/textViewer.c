@@ -59,6 +59,7 @@ viewer *initTextViewer(int width, int height) {
     ret->getEvent = getTextEvent;
     ret->render_game = render_game_text;
     ret->render_game_over = draw_game_over_text;
+    ret->playMusic = startTextMusic;
     ret->stop = stopTextViewer; 
     ret->destroy = destroyTextViewer;
 
@@ -153,6 +154,7 @@ Event getTextEvent(viewer *v) {
 
 }
 
+void startTextMusic(viewer *v) { }
 void stopTextViewer(viewer *v) { endwin(); } 
 
 void destroyTextViewer(viewer *v) {

@@ -2,10 +2,12 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h> 
 #include "viewer.h"
 
 #define BLOCK_SIZE 32
-#define FONT_PATH "src/font.ttf"
+#define FONT_PATH "src/assets/font.ttf"
+#define MUSIC_PATH "src/assets/Korobeiniki.mp3" 
 
 typedef struct {
     int r,g,b,a;
@@ -17,6 +19,8 @@ typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
     TTF_Font *font;
+    Mix_Music *sound;
+    bool music;
 } dataSdlViewer;
 
 /*
@@ -54,7 +58,7 @@ void render_game_sdl(viewer *v,tetris_game *game);
  * @param game structure represantant le jeu
 */
 void draw_game_over_sdl(viewer *,tetris_game *);
-
+void startSdlMusic(viewer *v);
 void stopSdlViewer(viewer *v);
 /**
  * @brief Detruit le viewer.

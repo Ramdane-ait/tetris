@@ -8,7 +8,7 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 CPPFLAGS ?= -MMD -MP -g
-LDFLAGS ?= $(shell sdl2-config --cflags --libs) -lm -lSDL2_ttf -lSDL2_image -lncurses
+LDFLAGS ?= $(shell sdl2-config --cflags --libs) -lm -lSDL2_ttf -lSDL2_mixer -lSDL2_image -lncurses
 
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)

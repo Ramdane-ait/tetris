@@ -55,6 +55,7 @@ void run(controller *c) {
     assert(c);
     int lines_cleared = 0;
     bool quit = false;
+    c->view->playMusic(c->view);
     while (!tetris_game_over(c->game) && !quit) {
         Event e = c->view->getEvent(c->view);
         quit = handle_event(c,e);
