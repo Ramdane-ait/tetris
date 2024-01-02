@@ -43,7 +43,7 @@ viewer *initSdlViewer(int width , int height) {
         return NULL;
     }
 
-    SDL_CreateWindowAndRenderer(width, height, SDL_INIT_VIDEO, &data->window,
+    SDL_CreateWindowAndRenderer((width + 8) * BLOCK_SIZE, (height + 4) * BLOCK_SIZE, SDL_INIT_VIDEO, &data->window,
                                 &data->renderer);
     if (!data->window) {
         fprintf(stderr, "Erreur SDL_CreateWindow : %s", SDL_GetError());
@@ -112,8 +112,6 @@ static void draw_string(SDL_Renderer *renderer,TTF_Font *font,char *text,int x, 
         rect.x = x - surface->w;
         break;
     }
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-    SDL_RenderFillRect(renderer, &rect);
 
     SDL_RenderCopy(renderer, texture, NULL, &rect);
     SDL_FreeSurface(surface);
@@ -123,9 +121,9 @@ static void draw_string(SDL_Renderer *renderer,TTF_Font *font,char *text,int x, 
 
 static void display_grid(SDL_Renderer *renderer, tetris_game *game) {
     unsigned x,y;
-    for (y = 0;y < game->height;y++) {
+    for (y = 2;y < game->height;y++) {
         for (x = 0;x < game->width;x++) {
-            draw_block(renderer,x + 1,y + 2,block_color[game->grid[y * game->width + x]]);
+            draw_block(renderer,x + 1,y,block_color[game->grid[y * game->width + x]]);
         }
     }
 }
@@ -184,15 +182,23 @@ void draw_game_over_sdl(viewer *v,tetris_game *game) {
 void render_game_sdl(viewer *v,tetris_game *game) {
     dataSdlViewer *data = (dataSdlViewer *)v->data;
     char buffer[50];
+    SDL_SetRenderDrawColor(data->renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(data->renderer);
     display_grid(data->renderer,game);
 
     draw_string(data->renderer, data->font, "SCORE", (game->width + 4) * BLOCK_SIZE, BLOCK_SIZE, TEXT_ALIGN_CENTER, (Color){0xcc,0xcc,0xcc,0xcc});
     snprintf(buffer,sizeof(buffer), "%u", game->score);
     draw_string(data->renderer, data->font, buffer, (game->width + 4) * BLOCK_SIZE, BLOCK_SIZE * 2+ 10, TEXT_ALIGN_CENTER, (Color){0xcc,0xcc,0xcc,0xcc});
+
     draw_string(data->renderer, data->font, "LEVEL", (game->width + 4) * BLOCK_SIZE, BLOCK_SIZE * 4, TEXT_ALIGN_CENTER, (Color){0xcc,0xcc,0xcc,0xcc});
     snprintf(buffer, sizeof(buffer), "%u", game->level);
     draw_string(data->renderer, data->font, buffer, (game->width + 4) * BLOCK_SIZE, BLOCK_SIZE * 5 + 10, TEXT_ALIGN_CENTER, (Color){0xcc,0xcc,0xcc,0xcc});
-    draw_nextPiece(data->renderer,data->font,game->width + 4,7,game);
+
+    draw_string(data->renderer, data->font, "LINES", (game->width + 4) * BLOCK_SIZE, BLOCK_SIZE * 7, TEXT_ALIGN_CENTER, (Color){0xcc,0xcc,0xcc,0xcc});
+    snprintf(buffer, sizeof(buffer), "%u", game->lines_remaining);
+    draw_string(data->renderer, data->font, buffer, (game->width + 4) * BLOCK_SIZE, BLOCK_SIZE * 8 + 10, TEXT_ALIGN_CENTER, (Color){0xcc,0xcc,0xcc,0xcc});
+
+    draw_nextPiece(data->renderer,data->font,game->width + 4,10,game);
     SDL_RenderPresent(data->renderer);
     SDL_Delay(16);
 }

@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "\t viewer can be \"text\" or \"sdl\"\n");
         return EXIT_FAILURE;
     }
-    tetris_game *game = tetris_create(20 , 10);
+    tetris_game *game = tetris_create(22 , 10);
     viewer *v = makeViewer(argv[1],game);
     controller *control = make_controller(v,game);
     run(control);

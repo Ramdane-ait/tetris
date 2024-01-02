@@ -14,7 +14,7 @@ viewer *makeViewer(char *vtype, tetris_game *game) {
   if (!strcmp(vtype, "text")) {
     ret = initTextViewer(game->width,game->height);
   } else if (!strcmp(vtype, "sdl")) {
-    ret = initSdlViewer((game->width + 8) * BLOCK_SIZE,(game->height + 5) * BLOCK_SIZE);
+    ret = initSdlViewer(game->width,game->height);
   }
 
   return ret;

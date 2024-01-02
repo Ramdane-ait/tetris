@@ -44,9 +44,9 @@ point TETROMINOS[NUM_TETROMINOS][NUM_ORIENTATION][NUM_TET_BLOCK] = {
    {{0, 1}, {1, 0}, {1, 1}, {2, 0}}},
 };
 
-int GRAVITY_LEVEL[MAX_LEVEL+1] = {
-  50, 48, 46, 44, 42, 40, 38, 36, 34, 32,
-  30, 28, 26, 24, 22, 20, 16, 12,  8,  4
+int GRAVITY_LEVEL[MAX_LEVEL + 1] = {
+  50, 48, 46, 44, 42, 39, 36, 33, 30, 27,
+  22, 18, 14, 10, 7, 6, 5, 4,  3,  2
 };
 
 

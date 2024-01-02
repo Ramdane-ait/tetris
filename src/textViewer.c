@@ -66,9 +66,8 @@ viewer *initTextViewer(int width, int height) {
 
 static void display_grid(WINDOW *w, tetris_game *game) {
     int i, j;
-    wclear(w);
     box(w, 0, 0);
-    for (i = 0; i < game->height; i++) {
+    for (i = 2; i < game->height; i++) {
         wmove(w, 1 + i, 1);
         for (j = 0; j < game->width; j++) {
             if (game->grid[i * game->width + j]) {
@@ -113,7 +112,16 @@ void render_game_text(viewer *v,tetris_game *game) {
 }
 
 
-void draw_game_over_text(viewer *,tetris_game *) {}
+void draw_game_over_text(viewer *v,tetris_game *game) {
+    int x,y;
+    dataTextViewer *data = (dataTextViewer *)v->data;
+    wclear(data->grid);
+    box(data->grid, 0, 0);
+    getmaxyx(data->grid,y,x);
+    mvwprintw(data->grid,y / 2, (x - 9) / 2 ,"GAME OVER");
+    wrefresh(data->grid);
+    sleep(2);
+}
 
 Event getTextEvent(viewer *v) {
     switch (getch()) {
