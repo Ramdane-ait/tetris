@@ -58,7 +58,13 @@ void render_game_sdl(viewer *v,tetris_game *game);
  * @param game structure represantant le jeu
 */
 void draw_game_over_sdl(viewer *,tetris_game *);
+/**
+ * @brief lance la musique de fond Sdl
+ * 
+ * @param v est la vue 
+*/
 void startSdlMusic(viewer *v);
+
 void stopSdlViewer(viewer *v);
 /**
  * @brief Detruit le viewer.
