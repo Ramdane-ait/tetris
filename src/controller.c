@@ -14,11 +14,11 @@ controller *make_controller(viewer *v, tetris_game *game) {
     return ret;
 }
 
-/*
+/**
 * @brief gestion d'un évenement
-* @returns bool - false pour quitter le jeu
+* @return bool - true pour quitter le jeu
 */
- bool handle_event(controller *c, Event e) {
+static bool handle_event(controller *c, Event e) {
         switch (e)
         {
             case E_QUIT:
@@ -72,7 +72,5 @@ void run(controller *c) {
 
 void destroy_controller(controller *c) {
     assert(c);
-    c->game = NULL;
-    c->view = NULL;
     free(c);
 }

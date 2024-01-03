@@ -34,21 +34,29 @@ viewer *initSdlViewer(int width , int height) {
     if (TTF_Init() < 0) {
         fprintf(stderr, "Could not initialise TTF: %s\n", TTF_GetError());
         free(ret);
+        SDL_Quit();
         return NULL;
     }
     bool music = true;
     if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) {
-        fprintf(stderr, "unable to initialize SDL_mixer\n");
+        fprintf(stderr, "Could not initialize SDL_mixer\n");
         music = false;
     }
     if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) != 0) {
-        fprintf(stderr, "unable to initialize audio\n");
+        fprintf(stderr, "Could not initialize audio\n");
+        Mix_Quit();
         music = false;
     }
     dataSdlViewer *data = (dataSdlViewer *)malloc(sizeof(dataSdlViewer));
     if (!data) {
         perror("Problem when allocating the data structure.");
         free(ret);
+        if (music) {
+            Mix_CloseAudio();
+            Mix_Quit();
+        }
+        TTF_Quit();
+        SDL_Quit();
         return NULL;
     }
 
@@ -58,18 +66,35 @@ viewer *initSdlViewer(int width , int height) {
         fprintf(stderr, "Erreur SDL_CreateWindow : %s", SDL_GetError());
         free(data);
         free(ret);
+        if (music) {
+            Mix_CloseAudio();
+            Mix_Quit();
+        }
+        TTF_Quit();
+        SDL_Quit();
         return NULL;
     }
     data->font = TTF_OpenFont(FONT_PATH,32);
     if (!data->font) {
         fprintf(stderr, "Erreur ouverture %s: %s\n", FONT_PATH,TTF_GetError());
+        free(data);
         free(ret);
+        if (music) {
+            Mix_CloseAudio();
+            Mix_Quit();
+        }
+        TTF_Quit();
+        SDL_Quit();
         return NULL;
     }
     if (music) {
         Mix_AllocateChannels(1);
         data->sound = Mix_LoadMUS(MUSIC_PATH);
-        if (!data->sound) music = false;
+        if (!data->sound) {
+            Mix_CloseAudio();
+            Mix_Quit();
+            music = false;
+        }
     }
     data->music = music;
     ret->data = data;
@@ -176,6 +201,7 @@ Event getSdlEvent(viewer *v) {
             return E_OTHER;
         } 
     }
+    return E_NO_INPUT;
 }
 
 static void draw_piece(SDL_Renderer *renderer, TTF_Font *font,char * text,int x , int y ,Tetromino piece) {
@@ -238,9 +264,9 @@ void destroySdlViewer(viewer *v) {
     TTF_CloseFont(data->font);
     Mix_FreeMusic(data->sound);
     Mix_CloseAudio();
-    Mix_Quit();
     free(data);
     free(v);
+    Mix_Quit();
     TTF_Quit();
     SDL_Quit();
 }

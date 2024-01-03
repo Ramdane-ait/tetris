@@ -143,9 +143,7 @@ static void tetris_new_piece(tetris_game *game) {
     game->nextPiece.location.col = game->width/2 - 2;
 }
 
-/*
-    @brief faire un mouvement a gauche (-1) ou a droite (1) d'une piece
-*/
+
 void tetris_move(tetris_game *game, int direction) {
     tetris_remove(game, game->currentPiece);
     game->currentPiece.location.col += direction;
@@ -161,9 +159,7 @@ void tetris_soft_drop(tetris_game *game) {
     if (!tetris_fits(game,game->currentPiece)) game->currentPiece.location.row--;
     tetris_put(game, game->currentPiece);
 }
-/*
-    @brief effectue un hard drop
-*/
+
 void tetris_hard_drop(tetris_game *game) {
     tetris_remove(game, game->currentPiece);
     while (tetris_fits(game, game->currentPiece)) {
@@ -192,9 +188,7 @@ void tetris_hold(tetris_game *game) {
     tetris_put(game, game->currentPiece);
 }
 
-/*
-    @brief effectuer une rotation
-*/
+
 void tetris_rotate(tetris_game *game, int direction) {
     tetris_remove(game, game->currentPiece);
     while (true) {
@@ -210,8 +204,8 @@ void tetris_rotate(tetris_game *game, int direction) {
 }
 
 
-/*
-    @brief verifie si une ligne est pleine
+/**
+   * @brief verifie si une ligne est pleine
 */
 static bool tetris_line_full(tetris_game *game, int i) {
     int j;
@@ -223,7 +217,7 @@ static bool tetris_line_full(tetris_game *game, int i) {
 }
 
 /*
-    @brief 
+    @brief enleve une ligne et fait descendre celles au dessus
 */
 static void tetris_shift_lines(tetris_game *game, int r) {
     int i, j;
@@ -235,9 +229,6 @@ static void tetris_shift_lines(tetris_game *game, int r) {
     }
 }
 
-/*
-    @brief supprime les lignes pleines,shift et retourne le nombre de lignes supprimées
-*/
 int tetris_check_lines(tetris_game *game) {
     int i, nlines = 0;
     tetris_remove(game, game->currentPiece);
@@ -253,9 +244,6 @@ int tetris_check_lines(tetris_game *game) {
     return nlines;
 }
 
-/*
-    @brief modifie le score du jeu 
-*/
 void tetris_adjust_score(tetris_game *game, int lines_cleared) {
     static int line_multiplier[] = {0, 40, 100, 300, 1200};
     game->score += line_multiplier[lines_cleared] * (game->level + 1);
@@ -267,9 +255,7 @@ void tetris_adjust_score(tetris_game *game, int lines_cleared) {
         game->lines_remaining -= lines_cleared;
     }
 }
-/*
-    @brief retourne vrai si c'est la fin du jeu 
-*/
+
 bool tetris_game_over(tetris_game *game) {
     int i, j;
     bool over = false;
@@ -284,9 +270,7 @@ bool tetris_game_over(tetris_game *game) {
     tetris_put(game, game->currentPiece);
     return over;
 }
-/*
-    @brief effectue un mouvement automatique vers le bas d'une piece
-*/
+
 void tetris_auto_move(tetris_game *game) {
     game->autoMove--;
     if (game->autoMove <= 0) {
@@ -303,16 +287,14 @@ void tetris_auto_move(tetris_game *game) {
         tetris_put(game, game->currentPiece);
     }
 }
-/*
-    @brief initialise le jeu
-*/
+
 void tetris_init(tetris_game *game, unsigned height, unsigned width) {
     game->height = height;
     game->width = width;
     game->grid = (int *)malloc(sizeof(int) * height * width);
     if (!game->grid) {
         perror("alloc error : ");
-        exit(EXIT_FAILURE);
+        return ;
     }
     memset(game->grid, TETRIS_VIDE, sizeof(int) * height * width);
     game->score = 0;
@@ -336,10 +318,12 @@ tetris_game *tetris_create(unsigned height, unsigned width)
     exit(EXIT_FAILURE);
   }
   tetris_init(game, height, width);
+  if (!game->grid) {
+    free(game);
+    return NULL;
+  }
   return game;
 }
-
-
 
 void tetris_destroy(tetris_game *game) {
     if (!game) return;

@@ -13,13 +13,15 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     tetris_game *game = tetris_create(22 , 10);
+    if (!game) exit(EXIT_FAILURE);
     viewer *v = makeViewer(argv[1],game);
     if (!v) exit(EXIT_FAILURE);
     controller *control = make_controller(v,game);
+    if (!control) exit(EXIT_FAILURE);
     run(control);
 
     destroy_controller(control);
     v->destroy(v);
     tetris_destroy(game);
-    return 0;
+    return EXIT_SUCCESS;
 }

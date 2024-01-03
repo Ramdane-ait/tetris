@@ -39,6 +39,8 @@ viewer *initTextViewer(int width, int height) {
     curs_set(0);           // set the cursor to invisible
     if (has_colors() == FALSE) {
         endwin();
+        free(data);
+        free(ret);
         fprintf(stderr, "Colors not supported\n");
         exit(EXIT_FAILURE);
     }
@@ -160,6 +162,7 @@ void stopTextViewer(viewer *v) { endwin(); }
 void destroyTextViewer(viewer *v) {
   delwin(((dataTextViewer *)v->data)->grid);
   delwin(((dataTextViewer *)v->data)->next);
+  delwin(((dataTextViewer *)v->data)->hold);
   delwin(((dataTextViewer *)v->data)->score);
   free(v->data);
   free(v);

@@ -1,15 +1,5 @@
 #pragma once
 
-/* #include "tetris.h"
-
-typedef struct event {
-    void *e;
-    tetris_movement (*getMovement)(struct event *);
-    void (*destroy)(struct event *);
-} Event;
-
-Event * make_event();  */
-
 typedef enum {
     E_QUIT = -1,
     E_NO_INPUT,
